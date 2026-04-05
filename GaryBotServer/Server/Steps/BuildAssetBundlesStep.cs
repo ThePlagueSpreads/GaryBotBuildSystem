@@ -22,7 +22,7 @@ public sealed class BuildAssetBundlesStep(IOptions<PathOptions> options, IOption
                 .Add("-executeMethod").Add("BuildAssetBundles.BuildFromCommandLine")
                 .Add("-bundleOutput").Add($"AssetBundles/{GetBestOutputFolderForPlatform(platformOptions.Value.Platform)}")
                 .Add("-bundleTarget").Add(platformOptions.Value.Platform)
-                .Add("-logFile").Add("-"))
+                .Add("-logFile").Add(options.Value.LogFilePath))
             .ExecuteBufferedAsync(ct);
 
         if (!string.IsNullOrWhiteSpace(result.StandardOutput))
