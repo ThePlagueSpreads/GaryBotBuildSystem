@@ -1,0 +1,35 @@
+## REMOVE THIS LINE LATER - this file shows an example of a nearly-valid appsettings.json file
+{
+    "ScheduleOptions": {
+         "BuildOnStartUp": true,
+         "StartUpBuildDelaySeconds": 15,
+         "BuildIntervalMinutes": 1440
+    },
+    "Paths": {
+         "WorkspacePath": "C:\\XXX\\GitHub\\GaryBotBuildSystem\\GaryBotServer\\Workspace",
+         "UnityProjectPath": "C:\\XXX\\GitHub\\RedPlagueAssets\\RedPlagueUnityProject",
+         "SolutionDirectory": "C:\\XXX\\GitHub\\RedPlagueCode",
+         "UnityExePath": "C:\\Program Files\\Unity\\Hub\\Editor\\2019.4.36f1\\Editor\\Unity.exe",
+	 "BuildOutputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Subnautica\\BepInEx\\plugins",
+	 "LogFilePath": "C:\\XXX\\GitHub\\GaryBotBuildSystem\\GaryBotServer\\Workspace\\Log.txt"
+    },
+    "GitHubOptions": {
+         "CodeRepoPath": "C:\\XXX\\GitHub\\RedPlagueCode",
+         "AssetsRepoPath": "C:\\XXX\\GitHub\\RedPlagueAssets"
+    },
+    "PlatformOptions": {
+         "Platform": "StandaloneWindows64"
+    },
+    "UploadOptions": {
+         "FolderNames": [
+             "TheRedPlague"
+         ],
+         "FolderId": "XXXXXXXXXXXXXXXXXXXXXXX (the ID from the Google folder URL, which can contain dashes, numbers, letters, etc)"
+    },
+    "DiscordOptions": {
+        "Token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX (long Discord bot token)",
+        "GuildId": 1234567890123456789,
+        "BuildChannelId": 1234567890123456789,
+	"RoleId": 1234567890123456789
+    }
+}
