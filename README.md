@@ -1,6 +1,8 @@
 # Gary Bot Build System
 A system designed for fully automatic building and deployment of mods that use a C# solution and Asset Bundles. Builds assemblies and assets. Designed to run on a Windows server.
 
+Features Discord and Google Drive integration.
+
 > [!NOTE]
 > Setup can be time-consuming due to the number of dependencies and required services. For instance, Blender must be installed on your machine to compile .blend files in Asset Bundles.
 
