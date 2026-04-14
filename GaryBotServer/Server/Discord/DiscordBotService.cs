@@ -121,7 +121,7 @@ public class DiscordBotService : BackgroundService, IBuildNotifications
     public async Task NotifyBuildQueuedAsync(BuildRequest request, CancellationToken ct = default)
     {
         await SendMessageAsync(
-            $"Build queued.\nRequested by {request.RequestedBy}\nBuild ID: `{request.Id}`",
+            $"@silent Build queued.\nRequested by {request.RequestedBy}\nBuild ID: `{request.Id}`",
             ct);
     }
 
