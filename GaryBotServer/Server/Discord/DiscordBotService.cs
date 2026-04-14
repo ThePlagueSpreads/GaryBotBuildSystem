@@ -144,7 +144,7 @@ public class DiscordBotService : BackgroundService, IBuildNotifications
     public async Task NotifyBuildFailedAsync(BuildRequest request, Exception ex, CancellationToken ct = default)
     {
         await SendMessageAsync(
-            $"# TRP Auto Build\n<@&{_options.RoleId}> - build failed! ⚠️\nRequested by {request.RequestedBy}\nBuild ID: `{request.Id}`\n```\n{ex.Message}\n```",
+            $"# TRP Auto Build\n<@Build failed or cancelled! ⚠️\nRequested by {request.RequestedBy}\nBuild ID: `{request.Id}`\n```\n{ex.Message}\n```",
             ct);
     }
 
