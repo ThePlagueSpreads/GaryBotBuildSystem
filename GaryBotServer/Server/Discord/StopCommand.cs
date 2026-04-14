@@ -27,10 +27,6 @@ public class StopCommand : InteractionModuleBase<SocketInteractionContext>
                 "Found nothing to cancel.",
                 ephemeral: true);
         }
-        
-        await RespondAsync(
-            "Cancelling build...",
-            ephemeral: false);
 
         bool cancelComplete = false;
         DateTime giveUpTime = DateTime.UtcNow.AddSeconds(GiveUpSeconds);
@@ -49,7 +45,7 @@ public class StopCommand : InteractionModuleBase<SocketInteractionContext>
         else
         {
             await RespondAsync(
-                "Build timed out.",
+                "Timed out while canceling.",
                 ephemeral: false);
         }
     }
