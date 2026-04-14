@@ -13,6 +13,10 @@ public sealed class BuildWorker : BackgroundService
     private readonly IBuildQueue _queue;
     private readonly BuildPipeline _pipeline;
     private readonly IBuildNotifications _notifications;
+    
+    private CancellationTokenSource? _currentBuildCancellation;
+
+    private List<CancelResult> _cancelResults = [];
 
     public BuildWorker(IBuildQueue queue,
         BuildPipeline pipeline,
@@ -34,10 +38,15 @@ public sealed class BuildWorker : BackgroundService
 
     private async Task RunBuildAsync(
         BuildRequest request,
-        CancellationToken ct)
+        CancellationToken stoppingToken)
     {
         _building = true;
         _currentBuild = request;
+        
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
+        _currentBuildCancellation = cts;
+        
+        var ct = cts.Token;
         
         await _notifications.NotifyBuildQueuedAsync(request, ct);
         Console.WriteLine($"Starting build {request.Id}");
@@ -53,9 +62,22 @@ public sealed class BuildWorker : BackgroundService
             await Console.Error.WriteLineAsync($"Build {request.Id} failed: {ex}");
             await _notifications.NotifyBuildFailedAsync(request, ex, ct);
         }
+        finally
+        {
+            _currentBuildCancellation = null;
+            _building = false;
+            _currentBuild = null;
+            UpdateCancelResults();
+        }
+    }
 
-        _building = false;
-        _currentBuild = null;
+    private void UpdateCancelResults()
+    {
+        foreach (var result in _cancelResults)
+        {
+            result.FinishedCancelling = true;
+        }
+        _cancelResults.Clear();
     }
 
     public string GetCurrentStatus()
@@ -71,5 +93,30 @@ public sealed class BuildWorker : BackgroundService
         }
 
         return "Working - " + _currentBuild.Status;
+    }
+
+    public bool CancelBuild(bool clearQueue, CancelResult result)
+    {
+        _cancelResults.Add(result);
+        
+        bool canceled = false;
+        
+        if (_building && _currentBuildCancellation != null)
+        {
+            _currentBuildCancellation.Cancel();
+            canceled = true;
+        }
+
+        if (clearQueue && _queue.Clear())
+        {
+            canceled = true;
+        }
+        
+        return canceled;
+    }
+
+    public sealed class CancelResult
+    {
+        public bool FinishedCancelling { get; set; }
     }
 }

@@ -14,25 +14,30 @@ public sealed class BuildAssetBundlesStep(IOptions<PathOptions> options, IOption
     {
         request.Status = "Building Asset Bundles";
         
-        var result = await Cli.Wrap(options.Value.UnityExePath)
-            .WithArguments(args => args
-                .Add("-batchmode")
-                .Add("-quit")
-                .Add("-projectPath").Add(options.Value.UnityProjectPath)
-                .Add("-executeMethod").Add("BuildAssetBundles.BuildFromCommandLine")
-                .Add("-bundleOutput").Add($"AssetBundles/{GetBestOutputFolderForPlatform(platformOptions.Value.Platform)}")
-                .Add("-bundleTarget").Add(platformOptions.Value.Platform)
-                .Add("-logFile").Add(options.Value.LogFilePath))
-            .ExecuteBufferedAsync(ct);
-
-        if (!string.IsNullOrWhiteSpace(result.StandardOutput))
-            Console.WriteLine(result.StandardOutput);
-
-        if (!string.IsNullOrWhiteSpace(result.StandardError))
-            Console.WriteLine(result.StandardError);
-
-        if (result.ExitCode != 0)
-            throw new Exception($"AssetBundle build failed with exit code {result.ExitCode}.");
+        try
+        {
+            var result = await Cli.Wrap(options.Value.UnityExePath)
+                .WithArguments(args => args
+                    .Add("-batchmode")
+                    .Add("-quit")
+                    .Add("-projectPath").Add(options.Value.UnityProjectPath)
+                    .Add("-executeMethod").Add("BuildAssetBundles.BuildFromCommandLine")
+                    .Add("-bundleOutput")
+                    .Add($"AssetBundles/{GetBestOutputFolderForPlatform(platformOptions.Value.Platform)}")
+                    .Add("-bundleTarget").Add(platformOptions.Value.Platform)
+                    .Add("-logFile").Add(options.Value.LogFilePath))
+                .ExecuteBufferedAsync(ct);
+            
+            if (result.ExitCode != 0)
+                throw new Exception($"AssetBundle build failed with exit code {result.ExitCode}.");
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            // Don't silently cancel
+            request.Status = "Canceled";
+            Console.WriteLine("Unity build canceled.");
+            throw;
+        }
     }
 
     private string GetBestOutputFolderForPlatform(string platform)

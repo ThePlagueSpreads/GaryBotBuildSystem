@@ -34,4 +34,16 @@ public sealed class SerialBuildQueue : IBuildQueue
             yield return request;
         }
     }
+
+    public bool Clear()
+    {
+        bool cleared = false;
+        
+        while (_channel.Reader.TryRead(out _))
+        {
+            cleared = true;
+        }
+
+        return cleared;
+    }
 }
