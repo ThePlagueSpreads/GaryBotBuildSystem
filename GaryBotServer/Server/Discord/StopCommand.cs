@@ -30,7 +30,7 @@ public class StopCommand : InteractionModuleBase<SocketInteractionContext>
 
         bool cancelComplete = false;
         DateTime giveUpTime = DateTime.UtcNow.AddSeconds(GiveUpSeconds);
-        while (!cancelComplete && giveUpTime < DateTime.UtcNow)
+        while (!cancelComplete && DateTime.UtcNow < giveUpTime)
         {
             await Task.Delay(100);
             cancelComplete = cancelResult.FinishedCancelling;
